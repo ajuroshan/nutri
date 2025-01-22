@@ -7,16 +7,24 @@ import SwiftUI
 
 struct HomePage: View {
     var body: some View {
-        Greeting()
+        VStack(spacing: 1) {
+            Greeting()
+            Featured()
+            Category()
+            Recipe()
+            Spacer()
+        }
+        .padding(.leading,5)
+        .padding(.top,10)
     }
 }
 
 struct Greeting: View {
     var body: some View {
-        VStack(spacing: 3) {
+        VStack (spacing:2){
             HStack {
                 Image(systemName: "sun.max.fill")
-                    .font(.system(size: 24))
+                    .font(.system(size: 20))
                     .foregroundColor(Color("Primary"))
                 
                 Text("Good Morning")
@@ -26,8 +34,9 @@ struct Greeting: View {
                 Spacer()
                 
                 Image(systemName: "cart")
-                    .font(.system(size: 20))
+                    .font(.system(size: 18))
                     .foregroundColor(.black)
+                    .padding(.trailing,6)
             }
             .padding(.horizontal)
             
@@ -35,12 +44,8 @@ struct Greeting: View {
                 .font(.system(size: 24, weight: .bold))
                 .foregroundColor(.primary)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .padding([.horizontal, .leading])
+                .padding(.horizontal)
             
-            Featured()
-            Category()
-            Recipe()
-            Spacer()
         }
     }
 }
@@ -62,7 +67,6 @@ struct Featured: View {
                             .scaledToFit()
                             .frame(width: 264, height: 172)
                             .cornerRadius(16)
-                            .padding(.leading)
                             .overlay {
                                 VStack {
                                     Spacer()
@@ -119,7 +123,6 @@ struct Category: View {
                                     .font(.system(size: 16, weight: .medium))
                                     .foregroundColor(.white)
                             )
-                            .padding(.leading)
                     }
                 }
                 .padding()
@@ -147,12 +150,13 @@ struct Recipe: View {
                             .shadow(color:Color.black.opacity(0.1),radius:5)
                             .scaledToFit()
                             .overlay {
-                                VStack {
+                                VStack (spacing:4){
                                     item.image
                                         .resizable()
                                         .scaledToFit()
                                         .cornerRadius(25)
                                         .frame(width: 168, height: 128)
+                                        .padding(.top,5)
                                     
                                     Text(item.title)
                                         .font(.system(size: 16, weight: .bold))
@@ -160,7 +164,7 @@ struct Recipe: View {
                                         .frame(maxWidth: .infinity, alignment: .leading)
                                         .padding(.horizontal, 15)
                                         .padding(.top, 5)
-
+                                    
                                     
                                     HStack {
                                         Image(systemName: "flame")
@@ -177,9 +181,8 @@ struct Recipe: View {
                                     }
                                     .padding(.bottom, 15)
                                     .padding(.horizontal, 15)
-                                    .padding(.top, 10)
+                                    .padding(.top, 5)
                                 }
-                                .padding(.horizontal, 5)
                             }
                     }
                 }
@@ -189,6 +192,88 @@ struct Recipe: View {
     }
 }
 
+
+
+
+struct BottomNavBar: View {
+    @State private var selectedTab: Int = 2 // Default selected tab
+    private let tabItems = ["house.fill", "magnifyingglass", "bell.fill", "person.fill"]
+    
+    var body: some View {
+        ZStack {
+            VStack {
+                Spacer()
+                
+                // Bottom Navigation Bar
+                HStack {
+                    ForEach(0..<tabItems.count, id: \.self) { index in
+                        if index == 2 { // Skip the middle tab for the elevated button
+                            Spacer()
+                        } else {
+                            Image(systemName: tabItems[index])
+                                .font(.system(size: 24))
+                                .foregroundColor(index == selectedTab ? .blue : .gray)
+                                .onTapGesture {
+                                    withAnimation {
+                                        selectedTab = index
+                                    }
+                                }
+                                .frame(maxWidth: .infinity)
+                        }
+                    }
+                }
+                .padding(.horizontal, 20)
+                .padding(.top, 10)
+                .padding(.bottom, 30)
+                .background(
+                    Color.white
+                        .clipShape(CustomTabBarShape())
+                        .shadow(color: Color.black.opacity(0.1), radius: 10, x: 0, y: -5)
+                )
+                .overlay(
+                    // Elevated Button
+                    Button(action: {
+                        withAnimation {
+                            selectedTab = 2
+                        }
+                    }) {
+                        Image(systemName: "crown.fill") // Change icon as needed
+                            .font(.system(size: 30))
+                            .foregroundColor(.white)
+                            .frame(width: 60, height: 60)
+                            .background(Color.green)
+                            .clipShape(Circle())
+                            .shadow(color: Color.black.opacity(0.2), radius: 10, x: 0, y: 5)
+                    }
+                        .offset(y: -30), // Elevate button above the nav bar
+                    alignment: .top
+                )
+            }
+        }
+        .edgesIgnoringSafeArea(.bottom)
+    }
+}
+
+// Custom shape for the bottom navigation bar with a cutout for the elevated button
+struct CustomTabBarShape: Shape {
+    func path(in rect: CGRect) -> Path {
+        let circleRadius: CGFloat = 35
+        let circleX: CGFloat = rect.width / 2
+        let circleY: CGFloat = -circleRadius + 20
+        
+        var path = Path()
+        path.addRoundedRect(in: rect, cornerSize: CGSize(width: 20, height: 20))
+        
+        // Cutout circle for elevated button
+        path.addArc(center: CGPoint(x: circleX, y: circleY),
+                    radius: circleRadius,
+                    startAngle: Angle(degrees: 0),
+                    endAngle: Angle(degrees: 360),
+                    clockwise: true)
+        
+        return path
+    }
+}
 struct FeatureItem: Identifiable {
     let id = UUID()
     let image: Image
@@ -243,9 +328,9 @@ struct RecipeData {
                     calorie: "120",
                     time: "10"),
         RecipeItems(image: Image("food"),
-                     title: "Asian white noodle with extra seafood",
-                     calorie: "120",
-                     time: "10"),
+                    title: "Asian white noodle with extra seafood",
+                    calorie: "120",
+                    time: "10"),
     ]
 }
 
