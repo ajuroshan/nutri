@@ -1,8 +1,9 @@
 import SwiftUI
 
-
-
-// TODO: I should probably create a text struct and reuse
+// TODO: probably create a text struct and reuse
+// TODO: Some texts are hardcoded need to refactor (api calls)
+// TODO: need to fix category button text color
+// TODO: need some code cleaning
 
 struct HomePage: View {
     var body: some View {
@@ -12,36 +13,34 @@ struct HomePage: View {
 
 struct Greeting: View {
     var body: some View {
-        ZStack {
-            VStack(spacing: 3) {
-                HStack {
-                    Image(systemName: "sun.max.fill")
-                        .font(.system(size: 24))
-                        .foregroundColor(Color("Primary"))
-                    
-                    Text("Good Morning")
-                        .foregroundColor(.primary)
-                        .font(.system(size: 14))
-                    
-                    Spacer()
-                    
-                    Image(systemName: "cart")
-                        .font(.system(size: 20))
-                        .foregroundColor(.black)
-                        .padding(.trailing)
-                }
-                .padding(.horizontal)
+        VStack(spacing: 3) {
+            HStack {
+                Image(systemName: "sun.max.fill")
+                    .font(.system(size: 24))
+                    .foregroundColor(Color("Primary"))
                 
-                Text("Aleena Sabyan")
-                    .font(.system(size: 24, weight: .bold))
+                Text("Good Morning")
+                    .font(.system(size: 14))
                     .foregroundColor(.primary)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding([.horizontal, .leading])
                 
-                Featured()
-                Category()
                 Spacer()
+                
+                Image(systemName: "cart")
+                    .font(.system(size: 20))
+                    .foregroundColor(.black)
             }
+            .padding(.horizontal)
+            
+            Text("Aleena Sabyan")
+                .font(.system(size: 24, weight: .bold))
+                .foregroundColor(.primary)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding([.horizontal, .leading])
+            
+            Featured()
+            Category()
+            Recipe()
+            Spacer()
         }
     }
 }
@@ -56,42 +55,42 @@ struct Featured: View {
                 .padding([.horizontal, .top, .leading])
             
             ScrollView(.horizontal) {
-                HStack(spacing: 10) {                    ForEach(FeaturedData.items) { item in
-                    item.image
-                        .resizable()
-                        .frame(width: 264, height: 172)
-                        .cornerRadius(16)
-                        .padding(.leading)
-                        .scaledToFit()
-                        .overlay {
-                            VStack (spacing:0){
-                                Spacer()
-                                Text(item.title)
-                                    .font(.system(size: 18, weight: .bold))
-                                    .foregroundColor(.white)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                    .padding(.leading,30)
-                                HStack{
-                                    item.prof_img
-                                        .foregroundColor(.white)
-                                    
-                                    Text(item.user_name)
-                                        .font(.system(size: 14, weight: .regular))
-                                        .foregroundColor(.white)
+                HStack(spacing: 10) {
+                    ForEach(FeaturedData.items) { item in
+                        item.image
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 264, height: 172)
+                            .cornerRadius(16)
+                            .padding(.leading)
+                            .overlay {
+                                VStack {
                                     Spacer()
-                                    Image(systemName: "clock")
+                                    Text(item.title)
+                                        .font(.system(size: 18, weight: .bold))
                                         .foregroundColor(.white)
-                                    Text("\(item.time) min")
-                                        .font(.system(size: 14, weight: .thin))
-                                        .foregroundColor(.white)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                        .padding(.leading, 30)
+                                    
+                                    HStack {
+                                        item.prof_img
+                                            .foregroundColor(.white)
+                                        Text(item.user_name)
+                                            .font(.system(size: 14, weight: .regular))
+                                            .foregroundColor(.white)
+                                        Spacer()
+                                        Image(systemName: "clock")
+                                            .foregroundColor(.white)
+                                        Text("\(item.time) min")
+                                            .font(.system(size: 14, weight: .thin))
+                                            .foregroundColor(.white)
+                                    }
+                                    .padding(.bottom, 15)
+                                    .padding(.horizontal, 30)
+                                    .padding(.top, 10)
                                 }
-                                .padding(.bottom,15)
-                                .padding(.horizontal,30)
-                                .padding(.top,10)
-                                
                             }
-                        }
-                }
+                    }
                 }
                 .padding()
             }
@@ -109,7 +108,7 @@ struct Category: View {
                 .padding([.horizontal, .top, .leading])
             
             ScrollView(.horizontal) {
-                HStack(spacing: 10) { // Adjusted spacing
+                HStack(spacing: 10) {
                     ForEach(CategoryData.items) { item in
                         Rectangle()
                             .frame(width: 119, height: 41)
@@ -129,13 +128,82 @@ struct Category: View {
     }
 }
 
+struct Recipe: View {
+    var body: some View {
+        VStack(spacing: 0) {
+            Text("Popular Recipes")
+                .font(.system(size: 20, weight: .medium))
+                .foregroundColor(.primary)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding([.horizontal, .top, .leading])
+            
+            ScrollView(.horizontal) {
+                HStack(spacing: 10) {
+                    ForEach(RecipeData.items) { item in
+                        Rectangle()
+                            .frame(width: 200, height: 240)
+                            .cornerRadius(16)
+                            .foregroundColor(.white)
+                            .shadow(color:Color.black.opacity(0.1),radius:5)
+                            .scaledToFit()
+                            .overlay {
+                                VStack {
+                                    item.image
+                                        .resizable()
+                                        .scaledToFit()
+                                        .cornerRadius(25)
+                                        .frame(width: 168, height: 128)
+                                    
+                                    Text(item.title)
+                                        .font(.system(size: 16, weight: .bold))
+                                        .foregroundColor(.black)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                        .padding(.horizontal, 15)
+                                        .padding(.top, 5)
+
+                                    
+                                    HStack {
+                                        Image(systemName: "flame")
+                                            .foregroundColor(.black)
+                                        Text(item.calorie)
+                                            .font(.system(size: 14, weight: .regular))
+                                            .foregroundColor(.black)
+                                        Spacer()
+                                        Image(systemName: "clock")
+                                            .foregroundColor(.black)
+                                        Text("\(item.time) min")
+                                            .font(.system(size: 14, weight: .thin))
+                                            .foregroundColor(.black)
+                                    }
+                                    .padding(.bottom, 15)
+                                    .padding(.horizontal, 15)
+                                    .padding(.top, 10)
+                                }
+                                .padding(.horizontal, 5)
+                            }
+                    }
+                }
+                .padding()
+            }
+        }
+    }
+}
+
 struct FeatureItem: Identifiable {
     let id = UUID()
     let image: Image
     let title: String
-    let prof_img : Image
-    let user_name : String
-    let time : String
+    let prof_img: Image
+    let user_name: String
+    let time: String
+}
+
+struct RecipeItems: Identifiable {
+    let id = UUID()
+    let image: Image
+    let title: String
+    let calorie: String
+    let time: String
 }
 
 struct CategoryItem: Identifiable {
@@ -148,19 +216,36 @@ struct FeaturedData {
     static var items = [
         FeatureItem(image: Image("featured_img"),
                     title: "Asian white noodle with extra seafood",
-                    prof_img:Image(systemName:"person.crop.circle.fill"),
+                    prof_img: Image(systemName: "person.crop.circle.fill"),
                     user_name: "James Spader",
-                    time:"10"),
+                    time: "10"),
+        FeatureItem(image: Image("featured_img"),
+                    title: "Healthy Taco Salad with fresh vegetable",
+                    prof_img: Image(systemName: "person.crop.circle.fill"),
+                    user_name: "James Spader",
+                    time: "10"),
         FeatureItem(image: Image("featured_img"),
                     title: "Asian white noodle with extra seafood",
-                    prof_img: Image(systemName:"person.crop.circle.fill"),
+                    prof_img: Image(systemName: "person.crop.circle.fill"),
                     user_name: "James Spader",
-                    time:"10"),
-        FeatureItem(image: Image("featured_img"),
+                    time: "10")
+    ]
+}
+
+struct RecipeData {
+    static var items = [
+        RecipeItems(image: Image("food"),
                     title: "Asian white noodle with extra seafood",
-                    prof_img:Image(systemName:"person.crop.circle.fill"),
-                    user_name: "James Spader",
-                    time:"10")
+                    calorie: "120",
+                    time: "10"),
+        RecipeItems(image: Image("food"),
+                    title: "Asian white noodle with extra seafood",
+                    calorie: "120",
+                    time: "10"),
+        RecipeItems(image: Image("food"),
+                     title: "Asian white noodle with extra seafood",
+                     calorie: "120",
+                     time: "10"),
     ]
 }
 
@@ -175,5 +260,3 @@ struct CategoryData {
 #Preview {
     HomePage()
 }
-
-
