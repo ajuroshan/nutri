@@ -13,6 +13,7 @@ struct HomePage: View {
             Category()
             Recipe()
             Spacer()
+            BottomNavBar()
         }
         .padding(.leading,5)
         .padding(.top,10)
@@ -207,7 +208,7 @@ struct BottomNavBar: View {
                 // Bottom Navigation Bar
                 HStack {
                     ForEach(0..<tabItems.count, id: \.self) { index in
-                        if index == 2 { // Skip the middle tab for the elevated button
+                        if index == 3 { // Skip the middle tab for the elevated button
                             Spacer()
                         } else {
                             Image(systemName: tabItems[index])
@@ -227,7 +228,6 @@ struct BottomNavBar: View {
                 .padding(.bottom, 30)
                 .background(
                     Color.white
-                        .clipShape(CustomTabBarShape())
                         .shadow(color: Color.black.opacity(0.1), radius: 10, x: 0, y: -5)
                 )
                 .overlay(
@@ -237,41 +237,20 @@ struct BottomNavBar: View {
                             selectedTab = 2
                         }
                     }) {
-                        Image(systemName: "crown.fill") // Change icon as needed
+                        Image(systemName: "house")
                             .font(.system(size: 30))
                             .foregroundColor(.white)
                             .frame(width: 60, height: 60)
-                            .background(Color.green)
+                            .background(Color("Primary"))
                             .clipShape(Circle())
                             .shadow(color: Color.black.opacity(0.2), radius: 10, x: 0, y: 5)
                     }
-                        .offset(y: -30), // Elevate button above the nav bar
+                        .offset(y: -25),
                     alignment: .top
                 )
             }
         }
         .edgesIgnoringSafeArea(.bottom)
-    }
-}
-
-// Custom shape for the bottom navigation bar with a cutout for the elevated button
-struct CustomTabBarShape: Shape {
-    func path(in rect: CGRect) -> Path {
-        let circleRadius: CGFloat = 35
-        let circleX: CGFloat = rect.width / 2
-        let circleY: CGFloat = -circleRadius + 20
-        
-        var path = Path()
-        path.addRoundedRect(in: rect, cornerSize: CGSize(width: 20, height: 20))
-        
-        // Cutout circle for elevated button
-        path.addArc(center: CGPoint(x: circleX, y: circleY),
-                    radius: circleRadius,
-                    startAngle: Angle(degrees: 0),
-                    endAngle: Angle(degrees: 360),
-                    clockwise: true)
-        
-        return path
     }
 }
 struct FeatureItem: Identifiable {
